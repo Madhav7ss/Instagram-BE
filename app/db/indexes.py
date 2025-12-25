@@ -1,4 +1,3 @@
-from app.db.mongo import db
 
 async def create_indexes(db):
     await db.users.create_index("id", unique=True)
