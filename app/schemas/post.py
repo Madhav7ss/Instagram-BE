@@ -19,3 +19,10 @@ class PostCreate(BaseModel):
     caption: Optional[str] = Field(None, max_length=300)
     media: List[MediaItem] = Field(..., min_items =1)
 
+
+class CommentAdd(BaseModel):
+    post_id: str
+    comment: str
+    replyToCommentId: Optional[str] = None
+
+

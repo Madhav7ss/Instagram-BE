@@ -24,5 +24,11 @@ EMAIL_USER_REQUIRED= "Email or username is required"
 INVALID_TOKEN= "Invalid or expired token"
 
 POST_CREATED_SUCCESSFULLY = "Post Created Successfully"
+POST_FETCH_SUCCESSFULLY = "Post Fetch Successfully"
+POST_NOT_FOUND = "Post not found"
 
 AUTHORIZATION_HEADER_MISSING= "Authorization header missing"
+
+COMMENT_ADDED_SUCCESSFULLY = "Comment Added Successfully"
+COMMENT_RETRIVED_SUCCESSFULLY = "Comments Retrieved Successfully"
+

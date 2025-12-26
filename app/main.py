@@ -4,7 +4,10 @@ from app.core.lifespan import lifespan
 
 app = FastAPI(
     title="Instagram",
-    lifespan= lifespan
+    lifespan=lifespan,
+    swagger_ui_parameters={
+        "persistAuthorization": True
+    }
 )
 
 app.include_router(api_router)
