@@ -32,3 +32,19 @@ AUTHORIZATION_HEADER_MISSING= "Authorization header missing"
 COMMENT_ADDED_SUCCESSFULLY = "Comment Added Successfully"
 COMMENT_RETRIVED_SUCCESSFULLY = "Comments Retrieved Successfully"
 
+GETTING_LIKES_COUNT_FAILED = "Getting Likes count Failed"
+LIKED_SUCCESSFULLY = "Liked Post Successfully"
+UN_LIKED_SUCCESSFULLY = "UnLiked Post Successfully"
+
+FOLLOWING_SUCCESSFULL = 'Account Followed Successfully'
+UN_FOLLOWING_SUCCESSFULL = "Account Un Followed Successfully"
+GETTING_FOLLOWING_COUNT_FAILED = "Getting Following Count Failed"
+FOLLOW_YOURSELF = "You cannot follow yourself"
+ALREDAY_FOLLOWING = "Already following"
+NOT_FOLLOWING= "You are not following this user"
+
+USER_NOT_FOUND = "User Not Found"
+USER_RETRIEVED_SUCCESS = "User Retrieved Successfully"
+USER_UPDATE_SUCCESS = "User Profile Updated Successfully"
+
+

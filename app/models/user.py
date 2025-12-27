@@ -8,6 +8,8 @@ def user_model(user: dict) -> dict:
         "name": user["name"],
         "username": user["username"],   # UNIQUE
         "email": user["email"],          # UNIQUE
+        "description": user.get('description', None),
+        "avatar": user.get('avatar', None),
 
         # Security
         "password": user["password"],    # hashed password only
@@ -16,6 +18,10 @@ def user_model(user: dict) -> dict:
         "posts": user.get("posts", []),
         "reels": user.get("reels", []),
         "comments": user.get("comments", []),
+        "followers_count": 0,
+        "followers": user.get("followers", []),
+        "followings_count": 0,
+        "followings": user.get("followings", []),
 
         # Metadata
         "is_active": user.get("is_active", True),

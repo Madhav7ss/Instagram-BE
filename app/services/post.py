@@ -2,7 +2,7 @@ from app.schemas.post import PostCreate, CommentAdd
 from fastapi import HTTPException, status
 from app.models.post import post_model
 from app.models.comment import comment_model
-from app.constants.messages import SOMETHING_WENT_WRONG, POST_NOT_FOUND
+from app.constants.messages import SOMETHING_WENT_WRONG, POST_NOT_FOUND, GETTING_LIKES_COUNT_FAILED, GETTING_FOLLOWING_COUNT_FAILED
 from uuid import uuid4
 
 
@@ -140,3 +140,76 @@ class PostService:
             "page": page,
             "comments": comments
         }
+    
+    async def like_post(self,post_id:str, current_user:dict):
+        try:
+            user_id = current_user.get('user_id')
+            await self.post.update_one(
+                {'id': post_id, 'likes': {'$ne': user_id}},
+                {'$addToSet': {'likes': user_id}, '$inc': {"likes_count": 1}}
+            )
+            count = await self.get_likes_count(post_id)
+            return {
+                "Total_Likes": count
+            }
+        except Exception:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=SOMETHING_WENT_WRONG)
+    
+    async def unlike_post(self,post_id: str, current_user:dict):
+        try:
+            user_id = current_user.get('user_id')
+            await self.post.update_one(
+                {"id": post_id, 'likes': user_id },
+                {'$pull': { 'likes': user_id}, "$inc": {'likes_count': -1} }
+            )
+
+            count = await self.get_likes_count(post_id)
+
+            return {
+                "Total_Likes": count
+            }
+
+        except Exception:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=SOMETHING_WENT_WRONG)
+        
+    async def get_likes_count(self, post_id:str):
+        try:
+            response = await self.post.find_one({'id': post_id}, {"_id": 0, "likes_count": 1})
+            return response['likes_count'] if response else 0
+        except Exception:
+            print(GETTING_LIKES_COUNT_FAILED)
+
+    async def get_posts(self, page:int, limit:int, current_user: dict):
+        try:
+            user_id = current_user.get('user_id')
+            users = await self.users.find_one(
+                {"id": user_id},
+                {"_id": 0, "followings": 1}
+            )
+
+            followings = users['followings'] if users else []
+            user_idss = followings + [user_id]
+
+            skip = (page-1) * limit
+
+            cursor = self.post.find(
+                {"user_id": {"$in": user_idss}}
+            ).sort("created_at", -1).skip(skip).limit(limit)
+
+            posts = await cursor.to_list(length = limit)
+            posts = self.order_posts(posts)
+            return posts
+
+        except Exception as e:
+            print(e)
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=SOMETHING_WENT_WRONG)
+        
+
+    def order_posts(self,posts: list):
+        for post in posts:
+             post["score"] = (
+                    post.get("like_count", 0) * 2 +
+                    post.get("comment_count", 0) * 3
+                )
+        posts.sort(key=lambda x: x["score"], reverse=True)
+        return posts

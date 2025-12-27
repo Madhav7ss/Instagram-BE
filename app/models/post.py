@@ -9,6 +9,7 @@ def post_model(post: dict)-> dict:
         "media":  post["media"],
         "location": post.get("location"),
         "hashtags": post.get("hashtags", []),
+        "likes": post.get("likes", []),
         "likes_count": 0,
         "comments_count": 0,
         "is_archived": False,

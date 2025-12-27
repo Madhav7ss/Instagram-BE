@@ -3,7 +3,7 @@ from app.schemas.post import PostCreate, CommentAdd
 from app.services.post import PostService
 from app.db.debs import get_db
 from app.schemas.response import SuccessResponse
-from app.constants.messages import POST_CREATED_SUCCESSFULLY, COMMENT_ADDED_SUCCESSFULLY, POST_FETCH_SUCCESSFULLY, COMMENT_RETRIVED_SUCCESSFULLY
+from app.constants.messages import POST_CREATED_SUCCESSFULLY, COMMENT_ADDED_SUCCESSFULLY, POST_FETCH_SUCCESSFULLY, COMMENT_RETRIVED_SUCCESSFULLY, LIKED_SUCCESSFULLY, UN_LIKED_SUCCESSFULLY
 from app.core.dependencies import get_current_user
 
 router = APIRouter(prefix='/post')
@@ -42,3 +42,23 @@ async def get_nested_comments(id: str, page: int = Query(ge=1), limit: int = Que
     service = PostService(db)
     response = await service.get_nested_comments(page, limit,id, parent_id)
     return SuccessResponse(message=COMMENT_RETRIVED_SUCCESSFULLY, data=response)        
+
+@router.post('/like/{id}', status_code=201)
+async def like_post(id:str, db = Depends(get_db), current_user = Depends(get_current_user)):
+    service = PostService(db)
+    response = await service.like_post(id, current_user)
+    return SuccessResponse(message=LIKED_SUCCESSFULLY, data=response)
+
+@router.post('/unlike/{id}', status_code=201)
+async def un_like_post(id:str, db = Depends(get_db), current_user = Depends(get_current_user)):
+    service = PostService(db)
+    response = await service.unlike_post(id, current_user)
+    return SuccessResponse(message=UN_LIKED_SUCCESSFULLY, data=response)
+
+@router.get('/list', status_code=200)
+async def posts(page: int = Query(1, ge=1), limit: int = Query(25, ge=10, le=100),db= Depends(get_db), current_user = Depends(get_current_user)):
+    service = PostService(db)
+    print(limit, page)
+    response = await service.get_posts(page, limit,current_user)
+    return SuccessResponse(message=POST_FETCH_SUCCESSFULLY, data=response)
+
